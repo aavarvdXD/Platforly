@@ -13,3 +13,4 @@ def loadImgs(path):
     imgs = []
     for imgName in os.listdir(BASE_IMG_PATH + path):
         imgs.append(loadImg(path + "/" + imgName))
+    return imgs
