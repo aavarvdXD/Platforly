@@ -19,7 +19,7 @@ class PhysicsEntity:
 
         self.pos[0] += frameMovement[0]
         entityRect = self.rect()
-        for rect in tilemap.physicsRectsAround(self.pos):
+        for rect in tilemap.physicsRectsAround(self.pos, self.size):
             if entityRect.colliderect(rect):
                 if frameMovement[0] > 0:
                     entityRect.right = rect.left
@@ -31,7 +31,7 @@ class PhysicsEntity:
 
         self.pos[1] += frameMovement[1]
         entityRect = self.rect()
-        for rect in tilemap.physicsRectsAround(self.pos):
+        for rect in tilemap.physicsRectsAround(self.pos, self.size):
             if entityRect.colliderect(rect):
                 if frameMovement[1] > 0:
                     entityRect.bottom = rect.top
@@ -41,7 +41,10 @@ class PhysicsEntity:
                     self.collisions['up'] = True
                 self.pos[1] = entityRect.y
 
-        self.vel[1] = min(7, self.vel[1] + 0.1)  # Terinal velocity
+        self.vel[1] = min(5, self.vel[1] + 0.2)  # Terinal velocity
 
-    def render(self, surf):
-        surf.blit(self.game.assets['player'], self.pos)
+        if self.collisions['up'] or self.collisions['down']:
+            self.vel[1] = 0
+
+    def render(self, surf, offset=(0, 0)):
+        surf.blit(self.game.assets['player'], (self.pos[0] - offset[0], self.pos[1] - offset[1]))

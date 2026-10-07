@@ -29,20 +29,23 @@ class Game():
 
         # print(self.assets)
 
-        self.player = PhysicsEntity(self, 'player', (50, 50), (8, 15))
+        self.player = PhysicsEntity(self, 'player', (50, 50), (16, 40))
+        self.speed = 1.5
 
         self.tilemap = Tilemap(self, tileSize=16)
+
+        self.scroll = [0,0]
 
     def run(self):
         while True:
             self.display.fill((0, 0, 15))
 
-            self.tilemap.render(self.display)
+            self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0])
 
-            self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display)
+            self.tilemap.render(self.display, offset=self.scroll)
 
-            print(self.tilemap.physicsRectsAround(self.player.pos))
+            self.player.update(self.tilemap, (self.movement[1] * self.speed - self.movement[0] * self.speed, 0))
+            self.player.render(self.display, offset=self.scroll)
 
             for event in pg.event.get():
                 if event.type == pg.QUIT or event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
@@ -54,6 +57,8 @@ class Game():
                         self.movement[0] = True
                     if event.key == pg.K_d:
                         self.movement[1] = True
+                    if event.key == pg.K_SPACE:
+                        self.player.vel[1] = -5
                 if event.type == pg.KEYUP:
                     if event.key == pg.K_a:
                         self.movement[0] = False
